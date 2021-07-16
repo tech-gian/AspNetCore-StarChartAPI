@@ -8,10 +8,10 @@ using StarChart.Data;
 
 namespace StarChart.Controllers
 {
+    [Route("")]
+    [ApiController]
     public class CelestialObjectController : ControllerBase
     {
-        public Route Route { get; set; }
-        public ApiControllerAttribute ApiController { get; set; }
         private readonly ApplicationDbContext _context;
 
         public CelestialObjectController(ApplicationDbContext context)
