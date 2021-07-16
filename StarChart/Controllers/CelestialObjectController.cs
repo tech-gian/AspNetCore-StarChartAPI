@@ -61,5 +61,63 @@ namespace StarChart.Controllers
 
             return Ok(CelestialObjects);
         }
+
+        [HttpPost]
+        public IActionResult Create([FromBody]CelestialObject celestialObject)
+        {
+            _context.CelestialObjects.Add(celestialObject);
+            _context.SaveChanges();
+
+            return CreatedAtRoute("GetById", new { celestialObject.Id }, celestialObject);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, CelestialObject celestialObject)
+        {
+            var CelestialObject = _context.CelestialObjects.FirstOrDefault(c => c.Id == id);
+            if (CelestialObject == null)
+            {
+                return NotFound();
+            }
+            CelestialObject.Name = celestialObject.Name;
+            CelestialObject.OrbitalPeriod = celestialObject.OrbitalPeriod;
+            CelestialObject.OrbitedObjectId = celestialObject.OrbitedObjectId;
+
+            _context.CelestialObjects.Update(CelestialObject);
+            _context.SaveChanges();
+
+            return NoContent();
+        }
+
+        [HttpPatch("{id}/{name}")]
+        public IActionResult RenameObject(int id, string name)
+        {
+            var celestialObject = _context.CelestialObjects.FirstOrDefault(c => c.Id == id);
+            if (celestialObject == null)
+            {
+                return NotFound();
+            }
+
+            celestialObject.Name = name;
+            _context.CelestialObjects.Update(celestialObject);
+            _context.SaveChanges();
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var celestialObject = _context.CelestialObjects.Where(c => c.Id == id || c.OrbitedObjectId == id).ToList();
+            if (celestialObject == null)
+            {
+                return NotFound();
+            }
+
+            _context.CelestialObjects.RemoveRange(celestialObject);
+            _context.SaveChanges();
+
+            return NoContent();
+        }
     }
 }
